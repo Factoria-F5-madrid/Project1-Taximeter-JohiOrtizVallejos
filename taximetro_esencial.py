@@ -66,17 +66,17 @@ def taximeter():
             
             if state == 'stopped':
                 print("Already stopped.")
-                # Calcula la tarifa actual sin cambiar de estado
                 current_duration = time.perf_counter() - state_start_time
                 temp_stopped_time = stopped_time + current_fare
                 fare = calculate_fare(temp_stopped_time, moving_time)
-                print(f"Already stopped.")
+                print("Already stopped.")
+                print(f"Time elapsed in current state: {current_duration:.1f}s")
                 print(f"Current fare is: €{fare:.2f}")
                 continue
 
             # Cambiar de 'moving' a 'stopped'
             moving_time = time.perf_counter() - state_start_time
-            state == 'stopped'
+            state = 'stopped'
             state_start_time = time.perf_counter()            
             print("State changed to 'stopped`'.")
             print_fare_summary(stopped_time, moving_time)
