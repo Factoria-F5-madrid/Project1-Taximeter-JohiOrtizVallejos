@@ -146,6 +146,21 @@ def taximeter():
             
             logging.info(f"Trayecto finalizado - Duración: {total_duration:.2f}s, Stopped: {stopped_time:.1f}s, Moving: {moving_time:.1f}s, Tarifa: €{total_fare:.2f}")
 
+            # Crear un registro histórico de trayectos pasados en un archivo de texto plano.
+            import csv
+            
+            with open("trip_history.csv", "a", newline="", encoding="utf-8") as csvfile:
+                writer = csv.writer(csvfile)
+                if csvfile.tell() == 0:
+                    writer.writerow(["fecha", "duracion_total", "tiempo_parado", "tiempo_moviendo", "tarifa_total"])
+                writer.writerow([
+                    time.strftime("%Y-%m-%d %H:%M:%S"),
+                    f"{total_duration:.2f}"
+                    f"{stopped_time:.1f}"
+                    f"{moving_time:.1f}"
+                    f"{total_fare:.2f}"
+                ])
+            
             # Reset las variables para el próximo viaje
             trip_active = False
             state = None
