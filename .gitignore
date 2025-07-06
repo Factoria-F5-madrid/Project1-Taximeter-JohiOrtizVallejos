@@ -1,7 +1,20 @@
-.venv
+# Entorno virtual
+.venv/
+venv/
+
+# Logs
+*.log
+**/*.log
 taximeter.log
-*/*.csv
-__pycache__
-*/*.json
-*/*.log
-.csv
+
+# Archivos de datos
+*.csv
+**/*.csv
+*.json
+**/*.json
+
+# Python cache
+__pycache__/
+*.pyc
+
+
