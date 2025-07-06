@@ -4,3 +4,4 @@ taximeter.log
 __pycache__
 */*.json
 */*.log
+.csv
