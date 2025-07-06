@@ -17,7 +17,18 @@ class Taximeter:
         self.moving_time = 0
         self.state = None
         self.state_start_time = 0
+     
         
+        
+    def show_dev_logs(self):
+        try:
+            with open("taximeter.log", "r", encoding="utf-8") as f:
+                print("\n--- Log History ---")
+                print(f.read())
+                print("--- End of Log ---\n")
+        except FileNotFoundError:
+            print("No log file found.")
+    
     def calculate_fare(self):
         return self.stopped_time * self.price_stopped + self.moving_time * self.price_moving
     
@@ -29,8 +40,20 @@ class Taximeter:
             self.moving_time += duration
             
     def print_welcome_message(self):
-        print("Welcome to the F5 taximeter!")
-        print("Available commands: 'start', 'stop', 'move', 'finish', 'setprices', 'exit'\n")
+        ORANGE = "\033[33m"   # Amarillo ANSI (naranja simulado)
+        RESET = "\033[0m"
+
+        print(ORANGE)
+        print("*" * 86)
+        print("*" + " " * 84 + "*")
+        print("*" + " " * 28 + "Welcome to the F5 taximeter!" + " " * 28 + "*")
+        print("*" + " " * 84 + "*")
+        print("*" + " " * 28 + "Available commands:" + " " * 37 + "*")
+        print("*" + " " * 11 + "'start', 'stop', 'move', 'finish', 'setprices', 'dev', 'exit'" + " " * 12 + "*")
+        print("*" + " " * 84 + "*")
+        print("*" * 86 + RESET)
+
+
             
     def print_fare_summary(self):
         self._print_summary_header("Partial summary")
@@ -187,6 +210,10 @@ class Taximeter:
                 
             elif command == "setprices":
                 self.set_prices()
+                self.print_welcome_message()
+            
+            elif command == 'dev':
+                self.show_dev_logs()
                 self.print_welcome_message()
                 
             elif command == "exit":
