@@ -1,4 +1,6 @@
 .venv
 taximeter.log
-*.csv
+*/*.csv
 __pycache__
+*/*.json
+*/*.log
