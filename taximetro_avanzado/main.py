@@ -1,4 +1,5 @@
 import logging
+from auth import authenticate_user
 from taximeter import Taximeter
 
 logging.basicConfig(
@@ -25,4 +26,5 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 if __name__ == "__main__":
+    authenticate_user()
     Taximeter().run()
