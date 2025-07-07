@@ -150,6 +150,11 @@ python3 -m unittest test_taximeter_gui.py
 
 - Python 3.8 o superior
 
+## 📋 Enlace a tablero de Trello
+
+[![Trello Board](https://img.shields.io/badge/Trello-Board-blue?logo=trello)](https://trello.com/invite/b/6866e56d457e7db9b528f6c7/ATTI7fc82fd9e98f7c9c3848e56cd78725cc1BC82FF3/mi-tablero-de-trello)
+
+
 ## 🧑‍💻 Autor
 
 Proyecto desarrollado por Johi Ortiz como parte del módulo 1 del curso de programación Python.
