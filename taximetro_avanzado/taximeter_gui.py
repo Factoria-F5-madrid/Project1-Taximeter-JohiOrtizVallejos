@@ -2,26 +2,24 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox, Toplevel, Label, Entry, Button, Text, Scrollbar, END
 from taximeter_cli import Taximeter
 import auth
+import time
 
 class LoginWindow(simpledialog.Dialog):
     def body(self, master):
         Label(master, text="User:").grid(row=0)
         Label(master, text="Password:").grid(row=1)
-        
         self.username_entry = Entry(master)
         self.password_entry = Entry(master, show="*")
-        
         self.username_entry.grid(row=0, column=1)
         self.password_entry.grid(row=1, column=1)
         return self.username_entry
-    
+
     def apply(self):
         self.result = (
             self.username_entry.get(),
             self.password_entry.get()
         )
-        
-        
+
 def authenticate_gui():
     while True:
         dialog = LoginWindow(None, title="Login Taximeter")
@@ -34,7 +32,6 @@ def authenticate_gui():
             return True
         else:
             messagebox.showerror("Login", "Incorrect username or password.")
-
 
 class PricesWindow(Toplevel):
     def __init__(self, master, taximeter):
@@ -50,7 +47,7 @@ class PricesWindow(Toplevel):
         self.stopped_entry.grid(row=0, column=1)
         self.moving_entry.grid(row=1, column=1)
         Button(self, text="Save", command=self.save_prices).grid(row=2, column=0, columnspan=2)
-        
+
     def save_prices(self):
         try:
             stopped = float(self.stopped_entry.get())
@@ -61,14 +58,14 @@ class PricesWindow(Toplevel):
             self.destroy()
         except ValueError:
             messagebox.showerror("Error", "Enter valid numeric values.")
-            
+
 class DevWindow(Toplevel):
     def __init__(self, master):
         super().__init__(master)
         self.title("Dev Menu")
         Button(self, text="Create User", command=self.create_user).pack(pady=5)
         self.log_text = None
-        
+
     def create_user(self):
         username = simpledialog.askstring("Create User", "New User:")
         if username:
@@ -78,7 +75,7 @@ class DevWindow(Toplevel):
                     messagebox.showinfo("Create User", f"Usuario '{username}' create")
                 else:
                     messagebox.showerror("Create User", "The user already exists.")
-                    
+
     def show_logs(self):
         if self.log_text:
             self.log_text.destroy()
@@ -88,7 +85,7 @@ class DevWindow(Toplevel):
             with open("taximeter.log", "r", encoding="utf-8") as f:
                 self.log_text.insert(END, f.read())
         except FileNotFoundError:
-            self.log_text.insert(END, "There are no logs.")    
+            self.log_text.insert(END, "There are no logs.")
 
 class TaximeterGUI:
     def __init__(self, root):
@@ -104,10 +101,10 @@ class TaximeterGUI:
         self.status_label.pack(pady=10)
 
         buttons = [
-            ("Start", self.start_trip),
-            ("Stop", self.stop_trip),
-            ("Move", self.move_trip),
-            ("Finish", self.finish_trip),
+            ("Start", self.start_trip_gui),
+            ("Stop", self.stop_gui),
+            ("Move", self.move_gui),
+            ("Finish", self.finish_trip_gui),
             ("Set Prices", self.set_prices),
             ("Dev", self.dev_menu),
             ("Exit", self.exit_app)
@@ -120,28 +117,76 @@ class TaximeterGUI:
         self.log_box = Text(root, width=60, height=10, state="disabled")
         self.log_box.pack(pady=10)
 
-    def update_status(self, msg):
-        self.status_label.config(text=msg.splitlines()[0])  # primer línea arriba
+        # Iniciar actualización periódica
+        self.periodic_update()
+
+    def periodic_update(self):
+        if self.taximeter.trip_active:
+            # Actualiza los tiempos y la tarifa en tiempo real
+            self.update_status()
+        self.root.after(500, self.periodic_update)
+
+    def update_status(self, msg=None):
+        if msg is None:
+            status = (
+                f"State: {self.taximeter.state}\n"
+                f"Time stopped: {self.taximeter.stopped_time:.1f} s\n"
+                f"Time moving: {self.taximeter.moving_time:.1f} s\n"
+                f"Stopped price: €{self.taximeter.price_stopped:.2f}/s\n"
+                f"Moving price: €{self.taximeter.price_moving:.2f}/s\n"
+                f"Current fare: {self.taximeter.current_fare}\n"
+                f"Total: €{self.taximeter.calculate_fare():.2f}"
+            )
+        else:
+            status = msg
+        self.status_label.config(text=status)
         self.log_box.config(state="normal")
-        self.log_box.insert(END, msg + "\n")
+        self.log_box.insert("end", status + "\n")
         self.log_box.config(state="disabled")
-        self.log_box.see(END)
+        self.log_box.see("end")
 
-    def start_trip(self):
-        msg = self.taximeter.start_trip()
-        self.update_status(msg)
+    def start_trip_gui(self):
+        self.taximeter.reset_trip()
+        self.taximeter.trip_active = True
+        self.taximeter.state = 'stopped'
+        self.taximeter.start_time = time.perf_counter()
+        self.taximeter.state_start_time = time.perf_counter()
+        self.update_status("Trip started. State: stopped.")
 
-    def stop_trip(self):
-        msg = self.taximeter.stop()
-        self.update_status(msg)
+    def stop_gui(self):
+        if not self.taximeter.trip_active:
+            self.update_status("No active trip.")
+            return
+        self.taximeter.update_state_time()
+        self.taximeter.state = 'stopped'
+        self.taximeter.state_start_time = time.perf_counter()
+        self.update_status("State changed to STOPPED.")
 
-    def move_trip(self):
-        msg = self.taximeter.move()
-        self.update_status(msg)
+    def move_gui(self):
+        if not self.taximeter.trip_active:
+            self.update_status("No active trip.")
+            return
+        self.taximeter.update_state_time()
+        self.taximeter.state = 'moving'
+        self.taximeter.state_start_time = time.perf_counter()
+        self.update_status("State changed to MOVING.")
 
-    def finish_trip(self):
-        msg = self.taximeter.finish_trip()
-        self.update_status(msg)
+    def finish_trip_gui(self):
+        if not self.taximeter.trip_active:
+            self.update_status("No active trip to finish.")
+            return
+        self.taximeter.update_state_time()
+        total_duration = time.perf_counter() - self.taximeter.start_time
+        total_fare = self.taximeter.calculate_fare()
+        summary = (
+            f"Trip finished!\n"
+            f"Total duration: {total_duration:.2f}s\n"
+            f"Stopped time: {self.taximeter.stopped_time:.1f}s\n"
+            f"Moving time: {self.taximeter.moving_time:.1f}s\n"
+            f"Total fare: €{total_fare:.2f}"
+        )
+        self.taximeter.reset_trip()
+        self.update_status(summary)
 
     def set_prices(self):
         window = Toplevel(self.root)
@@ -214,4 +259,3 @@ class TaximeterGUI:
 
     def exit_app(self):
         self.root.destroy()
-        

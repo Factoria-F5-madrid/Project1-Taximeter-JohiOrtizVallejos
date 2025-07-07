@@ -85,38 +85,38 @@ class Taximeter:
         print("📋 dev\n")
         print("❌ exit\n")
 
-    # def print_fare_summary(self):
-    #     self._print_summary_header("Partial summary")
+    def print_fare_summary(self):
+        self._print_summary_header("Partial summary")
     
-    # def print_total_summary(self, total_duration):
-    #     self._print_summary_header("Trip Summary", total_duration)
+    def print_total_summary(self, total_duration):
+        self._print_summary_header("Trip Summary", total_duration)
     
-    # def _print_summary_header(self, title, total_duration=None):
-    #     fare = self.calculate_fare()
-    #     print(f"\n--- {title} ---")
-    #     if total_duration is not None:
-    #         print(f"🕓 Total Trip Duration: {total_duration:.2f}s")
-    #     print(f"🚨 Stopped time: {self.stopped_time:.1f}s")
-    #     print(f"🚕 Moving time: {self.moving_time:.1f}s")
-    #     print(f"💶 Total fare: €{fare:.2f}")
-    #     print("----------------------\n")
-    #     logging.info(f"{title} - Stopped: {self.stopped_time:.1f}s, Moving: {self.moving_time:.1f}s, Fare: €{fare:.2f}")
+    def _print_summary_header(self, title, total_duration=None):
+        fare = self.calculate_fare()
+        print(f"\n--- {title} ---")
+        if total_duration is not None:
+            print(f"🕓 Total Trip Duration: {total_duration:.2f}s")
+        print(f"🚨 Stopped time: {self.stopped_time:.1f}s")
+        print(f"🚕 Moving time: {self.moving_time:.1f}s")
+        print(f"💶 Total fare: €{fare:.2f}")
+        print("----------------------\n")
+        logging.info(f"{title} - Stopped: {self.stopped_time:.1f}s, Moving: {self.moving_time:.1f}s, Fare: €{fare:.2f}")
         
-    # def _print_summary_moving(self, duration, temp_moving_time, fare):
-    #     print("----------------------------\n")
-    #     print("🚕 Already moving.")
-    #     print(f"🕓 Time elapsed in current state: {duration:.1f}s")
-    #     print(f"🕓 Total moving time so far: {temp_moving_time:.1f}s")
-    #     print(f"💶 Current fare is: €{fare:.2f}")
-    #     print("----------------------\n")
+    def _print_summary_moving(self, duration, temp_moving_time, fare):
+        print("----------------------------------------")
+        print("🚕 Already moving.")
+        print(f"🕓 Time elapsed in current state: {duration:.1f}s")
+        print(f"🕓 Total moving time so far: {temp_moving_time:.1f}s")
+        print(f"💶 Current fare is: €{fare:.2f}")
+        print("----------------------------------------\n")
     
-    # def _print_summary_stopped(self, duration, temp_stopped_time, fare):
-    #     print("----------------------\n")
-    #     print("🚨 Already stoppped.")
-    #     print(f"🕓 Time elapsed in current state: {duration:.1f}s")
-    #     print(f"🚕 Total moving time so far: {temp_stopped_time:.1f}s")
-    #     print(f"💶 Current fare is: €{fare:.2f}")
-    #     print("----------------------\n")
+    def _print_summary_stopped(self, duration, temp_stopped_time, fare):
+        print("----------------------------------------")
+        print("🚨 Already stoppped.")
+        print(f"🕓 Time elapsed in current state: {duration:.1f}s")
+        print(f"🚕 Total moving time so far: {temp_stopped_time:.1f}s")
+        print(f"💶 Current fare is: €{fare:.2f}")
+        print("----------------------------------------\n")
         
     def start_trip(self):
         self.reset_trip()
@@ -124,92 +124,64 @@ class Taximeter:
         self.state = 'stopped'
         self.start_time = time.perf_counter()
         self.state_start_time = time.perf_counter()
+        print("🚕 Trip started. Initial state: 'stopped'.")
         logging.info("Trip started")
-        return "🚕 Trip started. Initial state: 'stopped'."
         
     def stop(self):
         duration = time.perf_counter() - self.state_start_time
         temp_stopped_time = self.stopped_time + duration
         fare = temp_stopped_time * self.price_stopped + self.moving_time * self.price_moving
-
+        
         if self.state == 'stopped':
-            return f"🚨 Already stopped.\n🕓 Elapsed: {duration:.1f}s\n💶 Fare: €{fare:.2f}"
+            self._print_summary_stopped(duration, temp_stopped_time, fare)
         else:
             self.update_state_time()
             self.state = 'stopped'
             self.state_start_time = time.perf_counter()
-            return f"🛑 State changed to 'stopped'.\nStopped: {self.stopped_time:.1f}s\nFare: €{self.calculate_fare():.2f}"                
+            print("🛑 State changed to 'stopped'.")
+            self.print_fare_summary()                
         
     def move(self):
         duration = time.perf_counter() - self.state_start_time
         temp_moving_time = self.moving_time + duration
         fare = self.stopped_time * self.price_stopped + temp_moving_time * self.price_moving
-
+        
         if self.state == 'moving':
-            return f"🚕 Already moving.\n🕓 Elapsed: {duration:.1f}s\n💶 Fare: €{fare:.2f}"
+            self._print_summary_moving(duration, temp_moving_time, fare)
         else:
             self.update_state_time()
             self.state = 'moving'
             self.state_start_time = time.perf_counter()
-            return f"🟢 State changed to 'moving'.\nMoving: {self.moving_time:.1f}s\nFare: €{self.calculate_fare():.2f}"                
-    
-    def set_prices(self, mode=None, manual_stopped=None, manual_moving=None):
-        if mode == "night":
-            self.price_stopped = 0.02 * 2
-            self.price_moving = 0.05 * 2
-            self.current_fare = "night"
-            return f"🌙 Night rate activated: stopped €{self.price_stopped:.2f}/s, moving €{self.price_moving:.2f}/s"
-        elif mode == "day":
-            self.price_stopped = 0.02
-            self.price_moving = 0.05
-            self.current_fare = "day"
-            return f"🌞 Day rate activated: stopped €{self.price_stopped:.2f}/s, moving €{self.price_moving:.2f}/s"
-        elif manual_stopped is not None and manual_moving is not None:
-            try:
-                self.price_stopped = float(manual_stopped)
-                self.price_moving = float(manual_moving)
-                self.current_fare = "manual"
-                return f"💰 Manual prices set: stopped €{self.price_stopped:.2f}/s, moving €{self.price_moving:.2f}/s"
-            except ValueError:
-                return "❌ Invalid manual prices."
-        else:
-            return "ℹ️ No pricing changes applied."
-
-    
+            print("🛑 State changed to 'moving'.")
+            self.print_fare_summary()                
+        
     def finish_trip(self):
         self.update_state_time()
         total_duration = time.perf_counter() - self.start_time
-        fare = self.calculate_fare()
-
-        log_text = (
-            f"\n--- Trip Summary ---\n"
-            f"🕓 Total duration: {total_duration:.2f}s\n"
-            f"🛑 Stopped: {self.stopped_time:.1f}s\n"
-            f"🚕 Moving: {self.moving_time:.1f}s\n"
-            f"💶 Total fare: €{fare:.2f}\n"
-            f"----------------------\n"
-        )
-
-        with open("trip_history.csv", "a", newline="", encoding="utf-8") as file:
-            writer = csv.writer(file)
-            if file.tell() == 0:
-                writer.writerow(["date", "duration", "stopped", "moving", "fare", "price_stopped", "price_moving", "fare_type"])
+        total_fare = self.calculate_fare()
+        
+        self.print_total_summary(total_duration)
+        
+        with open("trip_history.csv", "a", newline="", encoding="utf-8") as csvfile:
+            writer = csv.writer(csvfile)
+            if csvfile.tell() == 0:
+                writer.writerow(["date", "total_duration", "time_stopped", "time_moving",
+                                 "total_rate", "stop_price", "moving_price", "fare"])
             writer.writerow([
                 time.strftime("%Y-%m-%d %H:%M:%S"),
                 f"{total_duration:.2f}",
                 f"{self.stopped_time:.1f}",
                 f"{self.moving_time:.1f}",
-                f"{fare:.2f}",
+                f"{total_fare:.2f}",
                 f"{self.price_stopped:.2f}",
                 f"{self.price_moving:.2f}",
                 self.current_fare
             ])
-
-        logging.info(f"Trip finished - duration: {total_duration:.2f}s, fare: €{fare:.2f}")
+            
+        logging.info(f"Completed route - Duration: {total_duration:.2f}s, Stopped: {self.stopped_time:.1f}s, Moving: {self.moving_time:.1f}s, Fare: €{total_fare:.2f}")
         self.reset_trip()
-        return log_text
         
-    def set_prices_cli(self):
+    def set_prices(self):
         print("💶  Set current prices:")
         print(" - 🌚  Enter 'night' for night rate")
         print(" - 🌞  Enter 'day' to return to day rate")
@@ -268,7 +240,7 @@ class Taximeter:
             self.print_welcome_message()
 
         def _setprices():
-            self.set_prices_cli()
+            self.set_prices()
             self.print_welcome_message()
 
         def _dev():
