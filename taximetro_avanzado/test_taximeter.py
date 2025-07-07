@@ -1,6 +1,6 @@
 import unittest
 import time
-from taximeter import Taximeter
+from taximeter_cli import Taximeter
 
 class TestTaximeter(unittest.TestCase):
     
