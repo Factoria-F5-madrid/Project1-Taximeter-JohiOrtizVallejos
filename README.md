@@ -1,66 +1,132 @@
 # 🚕 F5 Taxímetro
 
-Taxímetro en Python con interfaz por línea de comandos (CLI), orientado a objetos (OOP) y funcionalidades avanzadas como logs, tarifas dinámicas y exportación de historial.
+Taxímetro digital en Python con implementación escalonada: **nivel esencial**, **nivel medio**, **nivel avanzado** y **nivel experto**. Incluye versiones CLI, OOP, autenticación, logs, exportación de historial y una interfaz gráfica (GUI) en el nivel avanzado.
+<div align="center">
+  <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExN2dicHR1cWZjcm1iZ2h0ajgxamI3djhuc291cDJmNjdsbjY4cDF3aiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ypugC2vCJMqyXrSfzS/giphy.gif" alt="Taxi animation" />
+</div>
+
 
 ## 📋 Características principales
 
-- CLI interactiva para controlar el trayecto del taxi.
-- Cálculo de tarifa:
+- CLI interactiva y GUI para controlar el trayecto del taxi.
+- Cálculo de tarifa en tiempo real:
   - **0.02 €/s** detenido.
   - **0.05 €/s** en movimiento.
-- Posibilidad de cambiar precios manualmente o aplicar **tarifa nocturna**.
-- Guardado automático del historial en un archivo CSV.
-- Sistema de logs en `taximeter.log`.
-- Modo desarrollador para ver logs directamente en la terminal.
-- Bienvenida con diseño decorativo centrado en color.
+- Cambio de precios manual y aplicación de **tarifa nocturna** o personalizada.
+- Guardado automático del historial de trayectos en un archivo CSV.
+- Sistema de logs detallado en `taximeter.log`.
+- Modo desarrollador para visualizar logs y gestionar usuarios tanto en terminal como en GUI.
+- Sistema de autenticación de usuarios (nivel avanzado).
+- Interfaz gráfica (GUI) con login, control total del taxímetro, configuración de precios y visualización de logs.
+- Actualización en tiempo real de tiempos y tarifas en la interfaz gráfica.
+- Bienvenida con diseño decorativo y mensajes claros para el usuario.
 
 ## 🧱 Estructura del proyecto
 
 ```
     taximeter/
-    ├── taxímetro_esencial.py              # Nivel esencial del prooyecto (primera versión)
-    ├── taximetro_medio.py                 # Nivel medio del proyecto (segunda versión del proyecto)
-    └── test_taximeter.py                  # Pruebas unitarias agregadas en la segunda versión (opcional)
-        taximeter_avanzado/                # Nivel avanzado del proyecto (tercera versión)
-        ├── main.py              # Punto de entrada principal
-        ├── taximeter.py         # Clase Taximeter (lógica principal)
-        ├── config.py            # Precios por defecto
-        └── test_taximeter.py    # Pruebas unitarias (opcional)
+├── taximetro_esencial.py           # Nivel esencial (CLI básico)
+├── taximetro_medio.py              # Nivel medio (logs, tests, configuración)
+├── test_taximeter.py               # Pruebas unitarias (nivel medio/avanzado)
+└── taximeter_avanzado/             # Nivel avanzado
+    ├── main.py                     # CLI principal
+    ├── main_gui.py                 # GUI principal (Tkinter)
+    ├── taximeter.py                # Clase Taximeter (lógica OOP)
+    ├── taximeter_gui.py            # Lógica de la GUI
+    ├── config.py                   # Precios por defecto y configuración
+    ├── auth.py                     # Gestión de usuarios y autenticación
+    ├── taximeter.log               # Log del sistema
+    ├── trip_history.csv            # Historial de viajes
+    └── test_taximeter.py           # Pruebas unitarias (opcional)
+
 ```
 
-## ▶️ Cómo ejecutar
+## 📊 Niveles de Implementación
 
+### 🟢 Nivel Esencial
+
+- Programa CLI (línea de comandos) en Python.
+- Al iniciar, da la bienvenida y explica su funcionamiento.
+- Funcionalidades básicas:
+  - Iniciar un trayecto.
+  - Calcular tarifa mientras el taxi está parado (**0.02 €/s**).
+  - Calcular tarifa mientras el taxi está en movimiento (**0.05 €/s**).
+  - Finalizar un trayecto y mostrar el total en euros.
+  - Permitir iniciar un nuevo trayecto sin cerrar el programa.
+
+### 🟡 Nivel Medio
+
+- Sistema de logs para trazabilidad.
+- Tests unitarios para asegurar el correcto funcionamiento.
+- Registro histórico de trayectos en un archivo de texto.
+- Configuración de precios para adaptarse a la demanda.
+
+### 🟠 Nivel Avanzado
+
+- Refactorización a orientación a objetos (OOP).
+- Sistema de autenticación con contraseñas.
+- Interfaz gráfica de usuario (GUI) con Tkinter:
+  - Login de usuario.
+  - Control total del taxímetro (start, stop, move, finish).
+  - Configuración de precios y tarifas.
+  - Visualización de logs y gestión de usuarios desde el menú desarrollador.
+  - Actualización en tiempo real de tiempos y tarifa.
+
+## ▶️ Cómo ejecutar
+### CLI (nivel esencial)
 ```bash
-python main.py
+python taximetro_esecial.py
+```
+### CLI (nivel medio)
+```bash
+python taximetro_medio.py
+```
+### CLI (nivel avanzado)
+```bash
+python main_cli.py
+```
+### GUI (nivel avanzado)
+```bash
+cd taximeter_avanzado
+python main_gui.py
 ```
 
 ## 🛠️ Comandos disponibles
 
 | Comando     | Acción                                                  |
-|-------------|----------------------------------------------------------|
-| `start`     | Inicia un trayecto (estado inicial: detenido)           |
-| `move`      | Cambia a estado “en movimiento” o actualiza el tiempo   |
-| `stop`      | Cambia a estado “detenido” o actualiza el tiempo        |
-| `finish`    | Finaliza el trayecto, muestra resumen y guarda CSV      |
-| `setprices` | Configura precios personalizados o tarifa nocturna      |
-| `dev`       | Muestra el historial de logs en pantalla                |
-| `exit`      | Sale del programa                                       |
+|-------------|--------------------------------------------------------|
+| `start`     | Inicia un trayecto (estado inicial: detenido)          |
+| `move`      | Cambia a estado “en movimiento” o actualiza el tiempo  |
+| `stop`      | Cambia a estado “detenido” o actualiza el tiempo       |
+| `finish`    | Finaliza el trayecto, muestra resumen y guarda CSV     |
+| `setprices` | Configura precios personalizados o tarifa nocturna     |
+| `dev`       | Muestra el historial de logs y gestiona usuarios       |
+| `exit`      | Sale del programa   
 
-## 📁 Ejemplo de salida en consola
+## 📁 Ejemplo de CLI
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║                              ¡Bienvenido al taxímetro F5!                        ║
-║                  Comandos disponibles: 'start', 'stop', 'move', ...             ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-> start
-Trip started. Initial state: 'stopped'.
-> move
-State changed to 'moving'.
-Stopped time: 1.4 seconds
-Moving time: 0.0 seconds
-Current fare: €0.03
-```
+![cli](assets/cli1.png)
+![cli](assets/cli2.png)
+![cli animation](assets/taximeter_cli1.gif)
+![cli animation](assets/taximeter_cli2.gif)
+
+## 🖥️ Ejemplo de la GUI
+
+- Login de usuario.
+- Botones para controlar el viaje (start, stop, move, finish).
+- Configuración de precios y tarifas.
+- Visualización de logs y gestión de usuarios desde el menú desarrollador.
+- Actualización en tiempo real de tiempos y tarifa.
+
+![cli](assets/gui1.png)
+![cli](assets/gui2.png)
+![cli](assets/gui3.png)
+![cli](assets/gui4.png)
+![cli animation](assets/taxi_gui.gif)
+
+
+
+---
 
 ## 🧪 Pruebas unitarias
 
@@ -68,7 +134,17 @@ Puedes probar el cálculo de tarifas usando:
 
 ```bash
 python -m unittest test_taximeter.py
+python3 -m unittest test_taximeter_gui.py
 ```
+
+## 🛠️ Tecnologías utilizadas
+
+- Python
+- Git y GitHub para control de versiones
+- Tkinter para GUI (nivel avanzado)
+- logging, unittest, csv, etc.
+
+---
 
 ## 📦 Requisitos
 
