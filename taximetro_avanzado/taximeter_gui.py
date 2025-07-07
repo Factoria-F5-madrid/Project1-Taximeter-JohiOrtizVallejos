@@ -196,7 +196,18 @@ class TaximeterGUI:
         Label(window, text="Select mode:").pack(pady=5)
 
         def apply_mode(mode):
-            msg = self.taximeter.set_prices(mode)
+            msg = ""
+            if mode == "day":
+                self.taximeter.price_stopped = 0.02  # Tarifa de día - parado
+                self.taximeter.price_moving = 0.09   # Tarifa de día - en movimiento
+                self.taximeter.current_fare = "day"
+                msg = "Day rate applied."
+            elif mode == "night":
+                self.taximeter.price_stopped = 0.04  # Tarifa de noche - parado
+                self.taximeter.price_moving = 0.13   # Tarifa de noche - en movimiento
+                self.taximeter.current_fare = "night"
+                msg = "Night rate applied."
+            
             self.update_status(msg)
             window.destroy()
 
@@ -217,6 +228,7 @@ class TaximeterGUI:
         Button(window, text="Day rate", width=20, command=lambda: apply_mode("day")).pack(pady=5)
         Button(window, text="Night rate", width=20, command=lambda: apply_mode("night")).pack(pady=5)
         Button(window, text="Manual", width=20, command=set_manual_prices).pack(pady=5)
+
 
     def dev_menu(self):
         window = Toplevel(self.root)
@@ -243,6 +255,7 @@ class TaximeterGUI:
 
             log_window = Toplevel(window)
             log_window.title("Taximeter Logs")
+            log_window.geometry("600x450") 
             text_box = Text(log_window, wrap="word", width=60, height=20)
             text_box.pack(padx=10, pady=10, fill="both", expand=True)
 
