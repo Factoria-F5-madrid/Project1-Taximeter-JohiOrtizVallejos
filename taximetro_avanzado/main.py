@@ -1,6 +1,6 @@
 import logging
 from auth import authenticate_user
-from taximeter import Taximeter
+from taximeter_cli import Taximeter
 
 logging.basicConfig(
     level=logging.INFO,
