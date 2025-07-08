@@ -157,4 +157,4 @@ python3 -m unittest test_taximeter_gui.py
 
 ## 🧑‍💻 Autor
 
-Proyecto desarrollado por Johi Ortiz como parte del módulo 1 del curso de programación Python.
+Proyecto desarrollado por Johi Ortiz como parte del módulo 1 del curso del Bootcamp de IA P5 de Factoría F5.
