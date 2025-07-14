@@ -105,10 +105,18 @@ python main_gui.py
 
 ## 📁 Ejemplo de CLI
 
-![cli](assets/cli1.png)
-![cli](assets/cli2.png)
-![cli animation](assets/taximeter_cli1.gif)
-![cli animation](assets/taximeter_cli2.gif)
+<div align="center">
+  <img src="assets/cli1.png" width="50%" alt="CLI Screenshot">
+</div>
+<div align="center">
+  <img src="assets/cli2.png" width="50%" alt="CLI Screenshot">
+</div>
+<div align="center">
+  <img src="assets/taximeter_cli1.gif" width="50%" alt="CLI Screenshot">
+</div>
+<div align="center">
+  <img src="assets/taximeter_cli2.gif" width="50%" alt="CLI Screenshot">
+</div>
 
 ## 🖥️ Ejemplo de la GUI
 
