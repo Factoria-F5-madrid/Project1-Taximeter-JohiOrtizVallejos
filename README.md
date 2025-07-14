@@ -154,6 +154,21 @@ python3 -m unittest test_taximeter_gui.py
 
 [![Trello Board](https://img.shields.io/badge/Trello-Board-blue?logo=trello)](https://trello.com/invite/b/6866e56d457e7db9b528f6c7/ATTI7fc82fd9e98f7c9c3848e56cd78725cc1BC82FF3/mi-tablero-de-trello)
 
+### 📊 Estado del proyecto
+
+✅ Versión 1.0.
+
+### 🔜 Próximas mejoras
+
+- Implementación de autenticación de administrados.
+- Mejorar registro de logs (integrar acciones de usuario, errores y excepciones, tiempos de repuestas, versiones utilizadas, mensajes de depuración).
+- Mejorar GUI con CustomTkinter
+- Contador automático a pulsar move/stop
+- Calculador según Km/h
+- Dockerizar la aplicación para facilitar su despliegue y portabilidad.
+- Modo oscuro
+- Integrar una base de datos para almacenar los registros de trayectos pasados.
+- Desarrollar una versión web de la aplicación accesible a través de internet (Flask o Django).
 
 ## 🧑‍💻 Autor
 
